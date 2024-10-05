@@ -12,19 +12,69 @@ const { createYoga } = require("graphql-yoga");
 // Starting to build the schema
 const schema = buildSchema(`
     type Query{
-    description: String
-    price: Float
+        product: [Product]
+        orders: [ Order ]
     }
+    
+    type Product {
+    id: ID!
+    description: String!
+    reviews: [Review]
+    price: Float!
+    }
+
+    type Review {
+    rating: Int!
+    comment: String
+    }
+
+    type Order {
+    date: String!
+    subtotal: Float!
+    items: [OrderItem]
+    }
+
+    type OrderItem {
+    product: Product!
+    quantity: Int!
+    }
+
     `);
 
 // Let's define the root object
-/*
-const root = {
-  description: "Red Shoe",
-  price: 42.42,
-};
 
-*/
+const root = {
+  products: [
+    {
+      id: "RedShoe",
+      description: "Red shoe",
+      price: 42.42,
+    },
+
+    {
+      id: "bluejean",
+      description: "Blue Jean",
+      price: 55.55,
+    },
+  ],
+
+  orders: [
+    {
+      date: "2005-05-05",
+      subtotal: 90.22,
+      items: [
+        {
+          product: {
+            id: "redshoe",
+            description: "Old Red Shoe",
+            price: 45.11,
+          },
+          quantity: 2,
+        },
+      ],
+    },
+  ],
+};
 
 // Now how to connect this GraphQl structure to Express? that't where express-graphql comes in
 
@@ -37,9 +87,13 @@ app.use(
     // this function passed in (graphqlHTTP) takes some arguments which configure how graphql will respond
     // Now passing in the schema we created and defines the shape of our data
     schema: schema,
-    // rootValue: root, # this also does not exist in express-yoga
 
     // Important to add the following to make our API useful, which determines the values that will be used in the response of our query
+
+    // rootValue: root, # this also does not exist in express-yoga
+
+    // Enabling Graphiql
+    graphiql: true,
   })
 );
 
