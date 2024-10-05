@@ -1,0 +1,19 @@
+type Query {
+  product: [Product]
+}
+
+type Order {
+  date: String!
+  subtotal: Float!
+  items: [OrderItem]
+}
+
+type OrderItem {
+  product: Product!
+  quantity: Int!
+}
+
+# The problem now is how to import these schemas into our server
+#  We can pass in one by one but there is a tool from graphql tools project
+# that can help to do this;
+# and facilitate the workload.

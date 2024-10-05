@@ -1,7 +1,8 @@
+const path = require("path");
 const express = require("express");
 
 // Importing the function to build GraphQl Schemas
-const { buildSchema } = require("graphql");
+//const { buildSchema } = require("graphql");
 
 // Importing the express-graphql to connect express to graphql schema
 // and let's use the destructuring to take the specific library from the library
@@ -9,71 +10,34 @@ const { buildSchema } = require("graphql");
 // const { graphqlHTTP } = require("express-graphql");
 const { createYoga } = require("graphql-yoga");
 
-// Starting to build the schema
-const schema = buildSchema(`
-    type Query{
-        product: [Product]
-        orders: [ Order ]
-    }
-    
-    type Product {
-    id: ID!
-    description: String!
-    reviews: [Review]
-    price: Float!
-    }
+// importing the function from graphql tools to help in loading orders and products schemas
 
-    type Review {
-    rating: Int!
-    comment: String
-    }
+const { loadFilesSync } = require("@graphql-tools/load-files");
 
-    type Order {
-    date: String!
-    subtotal: Float!
-    items: [OrderItem]
-    }
+// Taking one function from graphql tools installed by using destructuring
 
-    type OrderItem {
-    product: Product!
-    quantity: Int!
-    }
+const { makeExecutableSchema } = require("@graphql-tools/schema");
 
-    `);
+// constant to help us load files
+
+// const typeArray = loadFilesSync(path.join(__dirname, "**/*.graphql")); #loadFilesSynch has been updated
+
+const typeArray = loadFilesSync("**/* ", {
+  extensions: ["graphql"],
+});
+
+// Let's make Graphql tools schema to replaace the buildSchema function
+const schema = makeExecutableSchema({
+  // it will take in object and the way the graphql tool calls schema it uses typeDefs
+  // and we need to pass in one of the schema. Let's define the schema structure above
+  typeDefs: typeArray,
+});
 
 // Let's define the root object
 
 const root = {
-  products: [
-    {
-      id: "RedShoe",
-      description: "Red shoe",
-      price: 42.42,
-    },
-
-    {
-      id: "bluejean",
-      description: "Blue Jean",
-      price: 55.55,
-    },
-  ],
-
-  orders: [
-    {
-      date: "2005-05-05",
-      subtotal: 90.22,
-      items: [
-        {
-          product: {
-            id: "redshoe",
-            description: "Old Red Shoe",
-            price: 45.11,
-          },
-          quantity: 2,
-        },
-      ],
-    },
-  ],
+  products: require("./products/products.model"),
+  orders: require("./products/products.model"),
 };
 
 // Now how to connect this GraphQl structure to Express? that't where express-graphql comes in
@@ -100,3 +64,11 @@ app.use(
 app.listen(3000, () => {
   console.log("Running GraphQl sever...");
 });
+
+/*
+N.B: For bigger projects, we need to use GraphQl tools to help us split our schema into
+parts so that not all logic live in the same files
+
+* THE GRAPHQL TOOLS WITHT THE FUNCTION USED(makeExecutableSchema) is going to help
+to modularize/ separate out schema
+*/
