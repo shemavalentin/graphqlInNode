@@ -3,11 +3,19 @@ type Query {
   products: [Product]
   # Adding a top level Querry to get the product by price
 
-  productByPrice(min: Float!, max: Float!): [Product]
+  productsByPrice(min: Float!, max: Float!): [Product]
 
   # Adding a top level Querry to get the product by ID
   product(id: ID!): Product
 }
+
+# ADDING ANOTHER ROOT LEVEL TYPE FOR ADDING OR DELETING PRODUCT
+
+type mutation {
+  #Writting a Query function to add new product
+  addNewProduct(id: ID!, description: String!, price: Float!): Product
+}
+
 type Product {
   id: ID!
   description: String!

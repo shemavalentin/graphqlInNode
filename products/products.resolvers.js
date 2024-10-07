@@ -19,4 +19,11 @@ module.exports = {
       return productsModel.getProductById(args.id);
     },
   },
+
+  Mutation: {
+    addNewProduct: (_, args) => {
+      // the body of the function will be to add all arguments
+      return productsModel.addNewProduct(args.id, args.description, args.price);
+    },
+  },
 };

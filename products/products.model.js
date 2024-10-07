@@ -4,12 +4,14 @@ const products = [
     id: "RedShoe",
     description: "Red shoe",
     price: 42.42,
+    reviews: [],
   },
 
   {
     id: "bluejean",
     description: "Blue Jean",
     price: 55.55,
+    reviews: [],
   },
 ];
 
@@ -33,8 +35,19 @@ function getProductById(id) {
   });
 }
 
+// Function to add new product
+function addNewProduct(id, description, price) {
+  const newProduct = {
+    id,
+    price,
+    description,
+    reviews: [],
+  };
+}
+
 module.exports = {
   getAllProducts,
   getProductsByPrice,
   getProductById,
+  addNewProduct,
 };
