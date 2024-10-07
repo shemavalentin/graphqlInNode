@@ -1,16 +1,9 @@
 const path = require("path");
+const cors = require("cors");
 const express = require("express");
 
-// Importing the function to build GraphQl Schemas
-//const { buildSchema } = require("graphql");
-
-// Importing the express-graphql to connect express to graphql schema
-// and let's use the destructuring to take the specific library from the library
-
-// const { graphqlHTTP } = require("express-graphql");
-// const { createYoga } = require("graphql-yoga");
-
-// importing the function from graphql tools to help in loading orders and products schemas
+const { ApolloServer } = require("@apollo/server");
+const { expressMiddleware } = require("@apollo/server/express4");
 
 const { loadFilesSync } = require("@graphql-tools/load-files");
 
@@ -20,64 +13,57 @@ const { makeExecutableSchema } = require("@graphql-tools/schema");
 
 // constant to help us load files.
 
-// const typeArray = loadFilesSync(path.join(__dirname, "**/*.graphql")); //loadFilesSynch has been updated
+const typesArray = loadFilesSync(path.join(__dirname, "**/*.graphql")); //loadFilesSynch has been updated
 
-const typeArray = loadFilesSync("**/* ", {
-  extensions: ["graphql"],
-});
+// const typeArray = loadFilesSync("**/* ", {
+//   extensions: ["graphql"],
+// });
 
 // Finding the resovers file by using PATH.JOIN to look inside of the current directory(__dirname)
 // then join that with file pattern that lookes inside any subdirectory('**/ for a file that ends in .resolvers.js');
 
-// const resolversArray = loadFilesSync(path.join(__dirname, "**/*.resolvers.js"));
+const resolversArray = loadFilesSync(path.join(__dirname, "**/*.resolvers.js"));
 // // depricated;
 
-const resolversArray = loadFilesSync("**/*", {
-  extensions: ["resolvers.js"],
-});
+// const resolversArray = loadFilesSync("**/*", {
+//   extensions: ["resolvers.js"],
+// });
 
-// Let's make Graphql tools schema to replaace the buildSchema function
-const schema = makeExecutableSchema({
-  // it will take in object and the way the graphql tool calls schema it uses typeDefs
-  // and we need to pass in one of the schema. Let's define the schema structure above
-  typeDefs: typeArray,
-  resolvers: resolversArray,
-});
+// function to make use of apollo server
+async function startApolloServer() {
+  const app = express();
 
-// Let's define the root object
+  const schema = makeExecutableSchema({
+    typeDefs: typesArray,
+    resolvers: resolversArray,
+  });
 
-//===================================================
-// const root = {
-//   products: require("./products/products.model"),
-//   orders: require("./orders/orders.model"),
-// };
+  // Creating the server object for apollo to handle the typeDefs and resolvers
+  const server = new ApolloServer({
+    schema,
+  });
 
-//===================================================
+  // Telling the apollo server to prepare to handle graphql operations
+  await server.start();
 
-// Now how to connect this GraphQl structure to Express? that't where express-graphql comes in
+  // If we want to configure how our server manages CROSS-ORIGIN REQUESTS , we will need to
+  // do that using the CORS Middleware.
 
-const app = express();
+  app.use(cors());
 
-// Adding Express-graphql middleware to express server
-app.use(
-  "/graphql",
-  createYoga({
-    // this function passed in (graphqlHTTP) takes some arguments which configure how graphql will respond
-    // Now passing in the schema we created and defines the shape of our data
-    schema: schema,
+  // Speaking of middleware, any express server needs to handle JSON in request needs to add a parser
+  // for that incoming JSON
+  app.use(express.json());
 
-    // Important to add the following to make our API useful, which determines the values that will be used in the response of our query
+  // Now connect apollo with express
+  app.use("/graphql", expressMiddleware(server));
 
-    // rootValue: root, # this also does not exist in express-yoga
+  app.listen(3000, () => {
+    console.log("Running GraphQl sever...");
+  });
+}
 
-    // Enabling Graphiql
-    graphiql: true,
-  })
-);
-
-app.listen(3000, () => {
-  console.log("Running GraphQl sever...");
-});
+startApolloServer();
 
 /*
 N.B: For bigger projects, we need to use GraphQl tools to help us split our schema into
