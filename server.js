@@ -8,7 +8,7 @@ const express = require("express");
 // and let's use the destructuring to take the specific library from the library
 
 // const { graphqlHTTP } = require("express-graphql");
-const { createYoga } = require("graphql-yoga");
+// const { createYoga } = require("graphql-yoga");
 
 // importing the function from graphql tools to help in loading orders and products schemas
 
