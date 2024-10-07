@@ -1,5 +1,12 @@
 type Query {
-  orders: [Order]
+  # Adding a top level Querry to get all products
+  products: [Product]
+  # Adding a top level Querry to get the product by price
+
+  productByPrice(min: Float!, max: Float!): [Product]
+
+  # Adding a top level Querry to get the product by ID
+  product(id: ID!): Product
 }
 type Product {
   id: ID!

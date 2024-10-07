@@ -1,5 +1,5 @@
 type Query {
-  product: [Product]
+  orders: [Order]
 }
 
 type Order {

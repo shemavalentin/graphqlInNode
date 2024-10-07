@@ -18,12 +18,22 @@ const { loadFilesSync } = require("@graphql-tools/load-files");
 
 const { makeExecutableSchema } = require("@graphql-tools/schema");
 
-// constant to help us load files
+// constant to help us load files.
 
-// const typeArray = loadFilesSync(path.join(__dirname, "**/*.graphql")); #loadFilesSynch has been updated
+// const typeArray = loadFilesSync(path.join(__dirname, "**/*.graphql")); //loadFilesSynch has been updated
 
 const typeArray = loadFilesSync("**/* ", {
   extensions: ["graphql"],
+});
+
+// Finding the resovers file by using PATH.JOIN to look inside of the current directory(__dirname)
+// then join that with file pattern that lookes inside any subdirectory('**/ for a file that ends in .resolvers.js');
+
+// const resolversArray = loadFilesSync(path.join(__dirname, "**/*.resolvers.js"));
+// // depricated;
+
+const resolversArray = loadFilesSync("**/*", {
+  extensions: ["resolvers.js"],
 });
 
 // Let's make Graphql tools schema to replaace the buildSchema function
@@ -31,14 +41,18 @@ const schema = makeExecutableSchema({
   // it will take in object and the way the graphql tool calls schema it uses typeDefs
   // and we need to pass in one of the schema. Let's define the schema structure above
   typeDefs: typeArray,
+  resolvers: resolversArray,
 });
 
 // Let's define the root object
 
-const root = {
-  products: require("./products/products.model"),
-  orders: require("./products/products.model"),
-};
+//===================================================
+// const root = {
+//   products: require("./products/products.model"),
+//   orders: require("./orders/orders.model"),
+// };
+
+//===================================================
 
 // Now how to connect this GraphQl structure to Express? that't where express-graphql comes in
 
