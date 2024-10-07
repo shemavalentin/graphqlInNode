@@ -25,5 +25,13 @@ module.exports = {
       // the body of the function will be to add all arguments
       return productsModel.addNewProduct(args.id, args.description, args.price);
     },
+
+    addNewProductReview: (_, args) => {
+      return productsModel.addNewProductReview(
+        args.id,
+        args.rating,
+        args.comment
+      );
+    },
   },
 };

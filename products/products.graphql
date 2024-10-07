@@ -14,6 +14,10 @@ type Query {
 type mutation {
   #Writting a Query function to add new product
   addNewProduct(id: ID!, description: String!, price: Float!): Product
+
+  # Adding a niew Mutation
+  # Adding new Product Review
+  addNewProductReview(id: ID!, rating: Int!, comment: String): Review
 }
 
 type Product {

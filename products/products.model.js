@@ -43,6 +43,26 @@ function addNewProduct(id, description, price) {
     description,
     reviews: [],
   };
+  products.push(newProduct);
+  return newProduct;
+}
+
+// Function to add new product review
+function addNewProductReview(id, rating, comment) {
+  // first have to check if the product exists so that we can not give a review to a product that does not exist
+  const matchedProduct = getProductById(id);
+
+  // condition to check
+  if (matchedProduct) {
+    const newProductReview = {
+      rating,
+      comment,
+    };
+    // Now if the rating and comment exist in our resolver function push into review
+    matchedProduct.reviews.push(newProductReview);
+
+    return newProductReview;
+  }
 }
 
 module.exports = {
@@ -50,4 +70,5 @@ module.exports = {
   getProductsByPrice,
   getProductById,
   addNewProduct,
+  addNewProductReview,
 };
