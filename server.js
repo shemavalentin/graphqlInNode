@@ -13,21 +13,21 @@ const { makeExecutableSchema } = require("@graphql-tools/schema");
 
 // constant to help us load files.
 
-const typesArray = loadFilesSync(path.join(__dirname, "**/*.graphql")); //loadFilesSynch has been updated
+// const typesArray = loadFilesSync(path.join(__dirname, "**/*.graphql")); //loadFilesSynch has been updated
 
-// const typeArray = loadFilesSync("**/* ", {
-//   extensions: ["graphql"],
-// });
+const typesArray = loadFilesSync("**/*", {
+  extensions: ["graphql"],
+});
 
 // Finding the resovers file by using PATH.JOIN to look inside of the current directory(__dirname)
 // then join that with file pattern that lookes inside any subdirectory('**/ for a file that ends in .resolvers.js');
 
-const resolversArray = loadFilesSync(path.join(__dirname, "**/*.resolvers.js"));
+// const resolversArray = loadFilesSync(path.join(__dirname, "**/*.resolvers.js"));
 // // depricated;
 
-// const resolversArray = loadFilesSync("**/*", {
-//   extensions: ["resolvers.js"],
-// });
+const resolversArray = loadFilesSync("**/*", {
+  extensions: ["resolvers.js"],
+});
 
 // function to make use of apollo server
 async function startApolloServer() {

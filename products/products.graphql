@@ -11,7 +11,7 @@ type Query {
 
 # ADDING ANOTHER ROOT LEVEL TYPE FOR ADDING OR DELETING PRODUCT
 
-type mutation {
+type Mutation {
   #Writting a Query function to add new product
   addNewProduct(id: ID!, description: String!, price: Float!): Product
 
